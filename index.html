@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>✨ 生日快乐 ✨</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:100%;height:100%;overflow:hidden;}
+
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",
+                system-ui,-apple-system,sans-serif;
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 22%, #3b1257 0%, rgba(59,18,87,0) 68%),
+      radial-gradient(ellipse 60% 50% at 12% 88%, #132a5e 0%, rgba(19,42,94,0) 70%),
+      radial-gradient(ellipse 60% 50% at 88% 88%, #5a0f3f 0%, rgba(90,15,63,0) 70%),
+      #06030c;
+    -webkit-user-select:none;user-select:none;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* ============ 星空画布 ============ */
+  #sky{position:fixed;inset:0;z-index:1;display:block;}
+
+  /* ============ 浪漫散景光斑 ============ */
+  .bokeh{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
+  .bokeh i{
+    position:absolute;display:block;border-radius:50%;
+    filter:blur(10px);
+    will-change:transform,opacity;
+    animation:floaty 20s ease-in-out infinite;
+  }
+  @keyframes floaty{
+    0%  {transform:translate3d(0,0,0) scale(1);}
+    33% {transform:translate3d(30px,-50px,0) scale(1.12);}
+    66% {transform:translate3d(-25px,-95px,0) scale(.95);}
+    100%{transform:translate3d(0,0,0) scale(1);}
+  }
+
+  /* ============ 顶部灯串 ============ */
+  .lightstring{
+    position:fixed;top:0;left:0;width:100%;height:80px;
+    z-index:4;display:flex;justify-content:space-between;
+    align-items:flex-end;padding:0 3vw 8px;pointer-events:none;
+  }
+  .bulb{
+    position:relative;width:11px;height:11px;border-radius:50%;
+    animation:blink 2.6s ease-in-out infinite;
+  }
+  .bulb::before{
+    content:'';position:absolute;left:50%;bottom:100%;
+    width:1px;height:72px;transform:translateX(-50%);
+    background:linear-gradient(to top,rgba(255,255,255,.22),rgba(255,255,255,0));
+  }
+  @keyframes blink{
+    0%,100%{opacity:.25;transform:scale(.78);}
+    50%    {opacity:1;  transform:scale(1.1);}
+  }
+
+  /* ============ 主体 ============ */
+  .stage{
+    position:relative;z-index:3;width:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:0 2vw;
+  }
+
+  /* 呼吸光晕 */
+  .halo{
+    position:absolute;left:50%;top:42%;z-index:-1;
+    width:min(140vw,1400px);aspect-ratio:1/1;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle,
+      rgba(255,61,154,.22) 0%,
+      rgba(168,85,247,.14) 32%,
+      rgba(77,208,225,.06) 52%,
+      transparent 68%);
+    filter:blur(20px);pointer-events:none;
+    animation:haloBreathe 7s ease-in-out infinite;
+  }
+  @keyframes haloBreathe{
+    0%,100%{transform:translate(-50%,-50%) scale(1);   opacity:.85;}
+    50%    {transform:translate(-50%,-50%) scale(1.12);opacity:1;}
+  }
+
+  /* 英文小字 */
+  .kicker{
+    font-size:clamp(11px, min(1.5vw, 2.2vh), 20px);
+    font-weight:600;
+    letter-spacing:.78em;text-indent:.78em;
+    color:#ffd76e;
+    text-shadow:
+      0 0 8px rgba(255,215,110,.95),
+      0 0 24px rgba(255,157,61,.7),
+      0 0 50px rgba(255,120,40,.4);
+    margin-bottom:clamp(12px, 2.2vh, 30px);
+    animation:riseIn 1s .1s cubic-bezier(.2,.8,.3,1) both;
+  }
+
+  /* 主标题：生日快乐 */
+  .title{
+    font-size:clamp(52px, min(15vw, 20vh), 200px);
+    font-weight:800;
+    letter-spacing:.06em;text-indent:.06em;
+    line-height:1.08;
+    color:#fff;
+    text-shadow:
+      0 0 3px #fff, 0 0 8px #fff,
+      0 0 18px #ff3d9a, 0 0 36px #ff3d9a,
+      0 0 66px #b03bff, 0 0 110px #a855f7,
+      0 0 180px rgba(168,85,247,.6);
+    animation:
+      riseIn 1.2s .2s cubic-bezier(.2,.8,.3,1) both,
+      neonPulse 3.6s ease-in-out infinite 1.4s;
+  }
+  .title span{display:inline-block;animation:letterFloat 4s ease-in-out infinite;}
+  .title span:nth-child(1){animation-delay:0s;}
+  .title span:nth-child(2){animation-delay:.28s;}
+  .title span:nth-child(3){animation-delay:.56s;}
+  .title span:nth-child(4){animation-delay:.84s;}
+  @keyframes letterFloat{
+    0%,100%{transform:translateY(0);}
+    50%    {transform:translateY(-7px);}
+  }
+
+  @keyframes riseIn{
+    from{opacity:0;transform:translateY(28px) scale(.96);filter:blur(8px);}
+    to  {opacity:1;transform:none;filter:blur(0);}
+  }
+  @keyframes neonPulse{
+    0%,100%{
+      text-shadow:
+        0 0 3px #fff, 0 0 8px #fff,
+        0 0 18px #ff3d9a, 0 0 36px #ff3d9a,
+        0 0 66px #b03bff, 0 0 110px #a855f7,
+        0 0 180px rgba(168,85,247,.6);
+    }
+    50%{
+      text-shadow:
+        0 0 2px #fff, 0 0 6px #fff,
+        0 0 12px #ff3d9a, 0 0 26px #ff3d9a,
+        0 0 48px #b03bff, 0 0 82px #a855f7,
+        0 0 140px rgba(168,85,247,.45);
+    }
+  }
+
+  /* 副标题 */
+  .subtitle{
+    margin-top:clamp(14px, 2.4vh, 34px);
+    font-size:clamp(11px, min(1.25vw, 1.9vh), 18px);
+    letter-spacing:.42em;text-indent:.42em;
+    color:rgba(255,235,246,.8);
+    text-shadow:0 0 14px rgba(255,61,154,.75), 0 0 34px rgba(168,85,247,.5);
+    animation:riseIn 1.1s .45s cubic-bezier(.2,.8,.3,1) both;
+  }
+
+  /* ============ 流动祝福语 ============ */
+  .marquee{
+    position:relative;
+    margin-top:clamp(22px, 3.6vh, 56px);
+    width:min(94vw, 1500px);
+    overflow:hidden;
+    padding:clamp(10px, 1.6vh, 20px) 0;
+    border-top:1px solid rgba(255,255,255,.09);
+    border-bottom:1px solid rgba(255,255,255,.09);
+    box-shadow:inset 0 0 40px rgba(168,85,247,.14);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 10%,#000 90%,transparent 100%);
+    animation:riseIn 1.1s .6s cubic-bezier(.2,.8,.3,1) both;
+  }
+  .track{
+    display:flex;width:max-content;white-space:nowrap;
+    animation:marquee 42s linear infinite;
+    will-change:transform;
+  }
+  .track span{
+    position:relative;display:inline-block;
+    padding:0 clamp(20px, 2.4vw, 44px);
+    font-size:clamp(14px, min(1.7vw, 2.4vh), 26px);
+    font-weight:500;
+    letter-spacing:.06em;
+    color:#ffeaf6;
+    text-shadow:
+      0 0 10px rgba(255,61,154,.85),
+      0 0 26px rgba(168,85,247,.6);
+  }
+  .track span::after{
+    content:'✦';
+    position:absolute;right:0;top:50%;
+    transform:translate(50%,-50%);
+    font-size:.62em;color:#ffd76e;
+    text-shadow:0 0 10px #ffd76e, 0 0 24px rgba(255,157,61,.8);
+  }
+  @keyframes marquee{
+    from{transform:translate3d(0,0,0);}
+    to  {transform:translate3d(-50%,0,0);}
+  }
+
+  /* ============ 全屏提示 ============ */
+  .hint{
+    position:fixed;bottom:18px;left:50%;
+    transform:translateX(-50%);
+    z-index:5;font-size:12px;letter-spacing:.2em;
+    color:rgba(255,255,255,.38);
+    pointer-events:none;white-space:nowrap;
+    animation:hintFade 1s 6s forwards;
+  }
+  @keyframes hintFade{to{opacity:0;}}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+<div class="bokeh" id="bokeh"></div>
+<div class="lightstring" id="lightstring"></div>
+
+<main class="stage">
+  <div class="halo"></div>
+  <p class="kicker">HAPPY BIRTHDAY</p>
+  <h1 class="title">生日快乐</h1>
+  <p class="subtitle">愿 你 岁 岁 平 安 · 年 年 欢 喜</p>
+  <div class="marquee"><div class="track" id="track"></div></div>
+</main>
+
+<div class="hint" id="hint">点击屏幕全屏 · 效果更佳</div>
+
+<script>
+/* ==================== 祝福语（可自由修改） ==================== */
+const WISHES = [
+  '愿你岁岁平安，年年欢喜',
+  '愿你眼里有光，心中有爱',
+  '愿所有美好都如期而至',
+  '生日快乐，万事胜意',
+  '愿你被这世界温柔以待',
+  '愿你每一岁都奔走在热爱里',
+  '星光不负赶路人，岁月温柔待你',
+  '祝你快乐，不止生日'
+];
+
+/* ==================== 渲染跑马灯 ==================== */
+(function buildMarquee(){
+  const track = document.getElementById('track');
+  const one = WISHES.map(w => `<span>${w}</span>`).join('');
+  track.innerHTML = one + one;   // 复制一份实现无缝滚动
+})();
+
+/* ==================== 顶部灯串 ==================== */
+(function buildLights(){
+  const wrap = document.getElementById('lightstring');
+  const colors = ['#ffd76e', '#ff6fb5', '#b388ff', '#69e6ff'];
+  const count = Math.max(9, Math.round(window.innerWidth / 88));
+  for (let i = 0; i < count; i++){
+    const b = document.createElement('span');
+    const c = colors[i % colors.length];
+    b.className = 'bulb';
+    b.style.background = c;
+    b.style.boxShadow = `0 0 8px ${c}, 0 0 20px ${c}, 0 0 42px ${c}`;
+    b.style.animationDelay = (-i * 0.34) + 's';
+    wrap.appendChild(b);
+  }
+})();
+
+/* ==================== 浪漫散景光斑 ==================== */
+(function buildBokeh(){
+  const wrap = document.getElementById('bokeh');
+  const tints = [
+    'rgba(255,61,154,.55)',
+    'rgba(168,85,247,.50)',
+    'rgba(255,215,110,.45)',
+    'rgba(77,208,225,.40)'
+  ];
+  for (let i = 0; i < 14; i++){
+    const el = document.createElement('i');
+    const size = 40 + Math.random() * 190;
+    el.style.width = el.style.height = size + 'px';
+    el.style.left = (Math.random() * 120 - 10) + '%';
+    el.style.top  = (Math.random() * 120 - 10) + '%';
+    el.style.background =
+      `radial-gradient(circle at 35% 35%, ${tints[i % 4]}, transparent 70%)`;
+    el.style.opacity = (0.22 + Math.random() * 0.45).toFixed(2);
+    el.style.animationDuration = (14 + Math.random() * 18) + 's';
+    el.style.animationDelay = (-Math.random() * 20) + 's';
+    wrap.appendChild(el);
+  }
+})();
+
+/* ==================== 星空 / 光尘 / 流星 ==================== */
+(function starfield(){
+  const canvas = document.getElementById('sky');
+  const ctx = canvas.getContext('2d');
+  const HUES = [340, 285, 45, 190];
+  const sprites = {};
+
+  let W = 0, H = 0, dpr = 1;
+  let stars = [], dusts = [], meteors = [];
+  let meteorTimer = 120;
+
+  /* 预渲染光点贴图，性能更好 */
+  function makeSprite(hue){
+    const size = 64;
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g2 = c.getContext('2d');
+    const g = g2.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+    g.addColorStop(0,    `hsla(${hue},100%,97%,1)`);
+    g.addColorStop(0.22, `hsla(${hue},100%,78%,.55)`);
+    g.addColorStop(0.55, `hsla(${hue},100%,65%,.16)`);
+    g.addColorStop(1,    `hsla(${hue},100%,60%,0)`);
+    g2.fillStyle = g;
+    g2.beginPath(); g2.arc(size/2, size/2, size/2, 0, Math.PI*2); g2.fill();
+    return c;
+  }
+  HUES.forEach(h => sprites[h] = makeSprite(h));
+
+  function buildStars(){
+    const n = Math.min(280, Math.round(window.innerWidth * window.innerHeight / 6500));
+    stars = [];
+    for (let i = 0; i < n; i++){
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: (0.4 + Math.random() * 1.6) * dpr,
+        p: Math.random() * Math.PI * 2,
+        sp: 0.006 + Math.random() * 0.024,
+        hue: HUES[(Math.random() * HUES.length) | 0]
+      });
+    }
+  }
+
+  function makeDust(fromBottom){
+    return {
+      x: Math.random() * W,
+      y: fromBottom ? H + Math.random() * H * 0.3 : Math.random() * H,
+      r: (0.8 + Math.random() * 2.4) * dpr,
+      vx: (Math.random() - 0.5) * 0.22 * dpr,
+      vy: -(0.12 + Math.random() * 0.5) * dpr,
+      a: 0.2 + Math.random() * 0.5,
+      hue: HUES[(Math.random() * HUES.length) | 0],
+      wob: Math.random() * Math.PI * 2
+    };
+  }
+
+  function buildDust(){
+    const n = Math.round(Math.min(38, window.innerWidth / 42));
+    dusts = Array.from({ length: n }, () => makeDust(false));
+  }
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width  = Math.floor(window.innerWidth  * dpr);
+    H = canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width  = window.innerWidth  + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    buildStars();
+  }
+
+  let last = performance.now();
+
+  function loop(now){
+    const dt = Math.min(now - last, 50) / 16.667;
+    last = now;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+
+    /* --- 闪烁星光 --- */
+    for (const s of stars){
+      s.p += s.sp * dt;
+      const k = 0.28 + 0.72 * (0.5 + 0.5 * Math.sin(s.p));
+      const d = s.r * 9;
+      ctx.globalAlpha = k;
+      ctx.drawImage(sprites[s.hue], s.x - d/2, s.y - d/2, d, d);
+    }
+
+    /* --- 上升光尘 --- */
+    for (let i = 0; i < dusts.length; i++){
+      const p = dusts[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.wob += 0.02 * dt;
+      if (p.y < -50 * dpr){ dusts[i] = makeDust(true); continue; }
+      const x = p.x + Math.sin(p.wob) * 9 * dpr;
+      const d = p.r * 10;
+      ctx.globalAlpha = p.a * (0.6 + 0.4 * Math.sin(p.wob * 1.7));
+      ctx.drawImage(sprites[p.hue], x - d/2, p.y - d/2, d, d);
+    }
+
+    /* --- 流星 --- */
+    meteorTimer -= dt;
+    if (meteorTimer <= 0 && meteors.length < 2){
+      meteorTimer = 200 + Math.random() * 320;
+      meteors.push({
+        x: Math.random() * W * 0.85,
+        y: Math.random() * H * 0.35,
+        vx: (4 + Math.random() * 4) * dpr,
+        vy: (1.6 + Math.random() * 1.8) * dpr,
+        len: (90 + Math.random() * 150) * dpr,
+        life: 1
+      });
+    }
+
+    for (let i = meteors.length - 1; i >= 0; i--){
+      const m = meteors[i];
+      m.x += m.vx * dt;
+      m.y += m.vy * dt;
+      m.life -= 0.006 * dt;
+      if (m.life <= 0 || m.x > W + 250 || m.y > H + 250){
+        meteors.splice(i, 1); continue;
+      }
+      const hyp = Math.hypot(m.vx, m.vy);
+      const nx = m.x - m.vx / hyp * m.len;
+      const ny = m.y - m.vy / hyp * m.len;
+      const grad = ctx.createLinearGradient(m.x, m.y, nx, ny);
+      grad.addColorStop(0,   `rgba(255,255,255,${0.9 * m.life})`);
+      grad.addColorStop(0.3, `rgba(255,120,200,${0.45 * m.life})`);
+      grad.addColorStop(1,   'rgba(168,85,247,0)');
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2 * dpr;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(loop);
+  }
+
+  resize();
+  buildDust();
+  window.addEventListener('resize', () => { resize(); buildDust(); });
+  requestAnimationFrame(loop);
+})();
+
+/* ==================== 点击进入全屏 ==================== */
+document.addEventListener('click', () => {
+  if (!document.fullscreenElement && document.documentElement.requestFullscreen){
+    document.documentElement.requestFullscreen().catch(() => {});
+  }
+});
+</script>
+</body>
+</html>
