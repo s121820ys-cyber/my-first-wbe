@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>致我最爱的老婆 · 生日快乐</title>
+<style>
+  :root { --pink: #d6336c; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(circle at 20% 20%, #ff9a9e 0%, #fad0c4 30%, #fbc2eb 65%, #a18cd1 100%);
+    background-attachment: fixed;
+    overflow-x: hidden; color: #fff;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ===== 背景飘浮爱心 ===== */
+  .floating-hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .heart { position: absolute; bottom: -60px; animation: floatUp linear infinite; will-change: transform; }
+  @keyframes floatUp { to { transform: translateY(-125vh) rotate(360deg); opacity: 0; } }
+
+  /* ===== 卡片 ===== */
+  .card {
+    position: relative; z-index: 2; max-width: 720px; margin: 0 auto;
+    padding: 28px 16px 40px; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .glass {
+    width: 100%;
+    background: rgba(255,255,255,.16);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 28px; padding: 32px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  }
+  h1 { font-size: clamp(26px, 7.5vw, 44px); margin: 0 0 8px; letter-spacing: 2px; text-shadow: 0 4px 20px rgba(214,51,108,.35); }
+  .date { font-size: 15px; opacity: .92; margin-bottom: 22px; letter-spacing: 1px; }
+
+  /* ===== 相册 ===== */
+  .slideshow {
+    position: relative; width: 100%;
+    aspect-ratio: 4 / 3; max-height: 60vh;
+    border-radius: 20px; overflow: hidden;
+    margin-bottom: 4px;
+    border: 3px solid rgba(255,255,255,.75);
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    background: linear-gradient(135deg, #ff9a9e, #fecfef);
+  }
+  .slide {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; opacity: 0; transition: opacity 1.4s ease-in-out;
+  }
+  .slide.active { opacity: 1; }
+  .empty-tip {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center;
+    padding: 26px; text-align: center;
+    font-size: 14px; line-height: 1.9;
+    color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.25);
+  }
+  .slideshow.empty .empty-tip { display: flex; }
+
+  /* ===== 歌词幻灯片 ===== */
+  .lyrics {
+    position: relative;
+    min-height: 78px;
+    margin: 14px auto 6px;
+    max-width: 620px;
+    opacity: 0;
+    transition: opacity 1s ease;
+    pointer-events: none;
+  }
+  .lyrics.show { opacity: 1; }
+  .lyric-line {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 12px;
+    text-align: center;
+    font-size: clamp(15px, 4.1vw, 19px);
+    line-height: 1.6;
+    letter-spacing: 1px;
+    font-weight: 500;
+    opacity: 0;
+    text-shadow: 0 2px 16px rgba(214, 51, 108, .5);
+  }
+  .lyric-line.active  { animation: lyricIn  .8s ease forwards; }
+  .lyric-line.leaving { animation: lyricOut .7s ease forwards; }
+
+  @keyframes lyricIn {
+    from { opacity: 0; transform: translateY(22px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);   }
+  }
+  @keyframes lyricOut {
+    from { opacity: 1; transform: translateY(0)     scale(1);   }
+    to   { opacity: 0; transform: translateY(-22px) scale(.97); }
+  }
+
+  /* ===== 按钮 ===== */
+  .btn {
+    margin-top: 12px; border: none; border-radius: 999px;
+    padding: 16px 34px; font-size: 17px; font-weight: 700;
+    color: var(--pink);
+    background: linear-gradient(135deg, #fff, #ffe3ee);
+    box-shadow: 0 10px 30px rgba(214,51,108,.35);
+    cursor: pointer; animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  .music-tip { margin-top: 16px; font-size: 13px; opacity: .88; line-height: 1.7; }
+
+  /* ===== 情书 ===== */
+  .message { margin-top: 4px; }
+  .message p {
+    font-size: clamp(16px, 4.2vw, 20px); line-height: 1.9;
+    margin: 12px 0; opacity: 0; transform: translateY(16px);
+  }
+  .message.show p { animation: fadeUp .9s ease forwards; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .signature { margin-top: 26px !important; font-size: 18px !important; font-weight: 700; }
+
+  /* ===== 音乐开关 ===== */
+  .music-btn {
+    position: fixed; right: 16px; bottom: 16px; z-index: 50;
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.6);
+    background: rgba(255,255,255,.25);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: #fff; font-size: 20px; line-height: 1;
+    display: none; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .music-btn.show { display: flex; }
+
+  /* ===== 爱心爆炸 ===== */
+  .boom {
+    position: fixed; pointer-events: none; font-size: 28px; z-index: 99;
+    animation: boom 1.2s ease-out forwards;
+  }
+  @keyframes boom {
+    to { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heart, .btn, .lyric-line { animation: none !important; }
+    .lyric-line.active { opacity: 1; }
+    .slide { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="floating-hearts" id="hearts"></div>
+
+<div class="card">
+  <div class="glass">
+    <h1>致我最爱的老婆</h1>
+    <div class="date">生日快乐 · 今天为你而浪漫</div>
+
+    <!-- 相册：把照片命名为 1.jpg ~ 17.jpg 放在同一文件夹即可 -->
+    <div class="slideshow" id="slideContainer">
+      <div class="empty-tip">把我的照片命名为 1.jpg ~ 17.jpg，<br>放在这个文件旁边，<br>这里就会变成我们的回忆相册 💕</div>
+      <img src="1.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="2.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="3.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="4.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="5.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="6.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="7.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="8.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="9.jpg"  class="slide" alt="我们的回忆" decoding="async">
+      <img src="10.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="11.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="12.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="13.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="14.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="15.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="16.jpg" class="slide" alt="我们的回忆" decoding="async">
+      <img src="17.jpg" class="slide" alt="我们的回忆" decoding="async">
+    </div>
+
+    <!-- 歌词幻灯片（内容由脚本根据 LYRICS 数组自动生成） -->
+    <div class="lyrics" id="lyricsBox"></div>
+
+    <button class="btn" id="startBtn">💗 轻触这里，开启生日惊喜</button>
+    <div class="music-tip" id="musicTip">点击后，浪漫的旋律会陪着你一起出现</div>
+
+    <div class="message" id="loveContent">
+      <p>亲爱的老婆：</p>
+      <p>从遇见你的那天起，我的世界就有了温柔的方向。</p>
+      <p>你笑的时候，像春日花海开满整个夏天；</p>
+      <p>你皱眉的时候，我想把全世界的糖都给你。</p>
+      <p>谢谢你陪我走过平凡的日子，把柴米油盐过成浪漫的诗。</p>
+      <p>今天是你生日，我想认真地对你说：</p>
+      <p>不止今天，而是余生每一天，我都爱你。</p>
+      <p>愿你所愿皆成，愿你眼里有光，心中有暖，身边有我。</p>
+      <p class="signature">——永远爱你的老公</p>
+    </div>
+  </div>
+</div>
+
+<button class="music-btn" id="musicBtn" aria-label="播放或暂停音乐">🎵</button>
+
+<!-- 音乐：优先外链，失败时自动尝试同目录 music.mp3 -->
+<audio id="bgm" loop preload="auto" playsinline>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_20623eb3a6.mp3?filename=romantic-piano-113953.mp3" type="audio/mpeg">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =======================================================
+     ★★★ 歌词在这里修改 ★★★
+     每一行对应幻灯片的一屏，会一句一句自动播放。
+     想写几句就写几句，数量不限。
+     ======================================================= */
+  var LYRICS = [
+    '祝你生日快乐，我亲爱的老婆',
+    '感谢你出现在我平凡的生活里',
+    '你眼里的星光，是我整片银河',
+    '牵着你的手，每天都像此刻',
+    '柴米油盐里，藏着我们的歌',
+    '往后的日子，我都陪你走过',
+    '生日快乐，我的爱',
+    '余生很长，请多指教'
+  ];
+
+  /* 每句歌词停留的毫秒数（4000 = 4 秒） */
+  var LYRIC_INTERVAL = 4000;
+
+  /* 每张照片停留的毫秒数 */
+  var PHOTO_INTERVAL = 3500;
+
+
+  /* ========== 1. 背景飘浮爱心 ========== */
+  var hearts = document.getElementById('hearts');
+  var heartChars = ['❤', '💗', '💕', '💖', '🌸'];
+  var heartFragment = document.createDocumentFragment();
+  for (var i = 0; i < 26; i++) {
+    var el = document.createElement('div');
+    el.className = 'heart';
+    el.textContent = heartChars[Math.floor(Math.random() * heartChars.length)];
+    el.style.left = (Math.random() * 100) + 'vw';
+    el.style.fontSize = (14 + Math.random() * 26) + 'px';
+    el.style.animationDuration = (8 + Math.random() * 10) + 's';
+    el.style.animationDelay = (-Math.random() * 12) + 's';
+    el.style.opacity = (0.4 + Math.random() * 0.5).toFixed(2);
+    heartFragment.appendChild(el);
+  }
+  hearts.appendChild(heartFragment);
+
+
+  /* ========== 2. 相册轮播（自动跳过加载失败的图片） ========== */
+  var container = document.getElementById('slideContainer');
+  var slideshowStarted = false;
+
+  function initSlideshow() {
+    if (slideshowStarted) return;
+    slideshowStarted = true;
+
+    var imgs = Array.prototype.slice.call(container.querySelectorAll('img'));
+    var valid = [];
+
+    imgs.forEach(function (img) {
+      if (img.naturalWidth > 0) {
+        valid.push(img);
+      } else {
+        img.remove();               // 加载失败的直接移除，不占位
+      }
+    });
+
+    if (valid.length === 0) {       // 一张都没有 → 显示提示
+      container.classList.add('empty');
+      return;
+    }
+
+    valid.forEach(function (img, i) {
+      img.classList.toggle('active', i === 0);
+    });
+
+    if (valid.length === 1) return; // 只有一张不用切换
+
+    var current = 0;
+    setInterval(function () {
+      valid[current].classList.remove('active');
+      current = (current + 1) % valid.length;
+      valid[current].classList.add('active');
+    }, PHOTO_INTERVAL);
+  }
+
+  window.addEventListener('load', initSlideshow);
+  setTimeout(initSlideshow, 8000);  // 网络慢时的兜底
+
+
+  /* ========== 3. 歌词幻灯片 ========== */
+  var lyricsBox = document.getElementById('lyricsBox');
+  var lyricEls = LYRICS.map(function (line) {
+    var el = document.createElement('div');
+    el.className = 'lyric-line';
+    el.textContent = line;
+    lyricsBox.appendChild(el);
+    return el;
+  });
+
+  var currentLyric = -1;
+  var lyricTimer = null;
+
+  function showLyric(index) {
+    if (index === currentLyric || !lyricEls[index]) return;
+
+    /* 让上一句优雅地飘走 */
+    if (currentLyric >= 0 && lyricEls[currentLyric]) {
+      var prev = lyricEls[currentLyric];
+      prev.classList.add('leaving');
+      prev.classList.remove('active');
+      (function (node) {
+        setTimeout(function () { node.classList.remove('leaving'); }, 720);
+      })(prev);
+    }
+
+    /* 新的一句从下方浮上来 */
+    var next = lyricEls[index];
+    next.classList.remove('leaving');
+    next.classList.add('active');
+
+    currentLyric = index;
+  }
+
+  function startLyricShow() {
+    if (lyricEls.length === 0) return;
+    showLyric(0);
+    if (lyricEls.length === 1) return;   // 只有一句就不用循环了
+    lyricTimer = setInterval(function () {
+      showLyric((currentLyric + 1) % lyricEls.length);
+    }, LYRIC_INTERVAL);
+  }
+
+
+  /* ========== 4. 情书逐句出现 ========== */
+  var content = document.getElementById('loveContent');
+  var paragraphs = content.querySelectorAll('p');
+  for (var k = 0; k < paragraphs.length; k++) {
+    paragraphs[k].style.animationDelay = (0.1 + k * 0.2).toFixed(2) + 's';
+  }
+
+
+  /* ========== 5. 爱心爆炸 ========== */
+  function boomHearts() {
+    var chars = ['❤', '💗', '💖', '✨', '🌸'];
+    var cx = window.innerWidth / 2;
+    var cy = window.innerHeight / 2;
+    for (var n = 0; n < 18; n++) {
+      var s = document.createElement('div');
+      s.className = 'boom';
+      s.textContent = chars[Math.floor(Math.random() * chars.length)];
+      s.style.left = cx + 'px';
+      s.style.top = cy + 'px';
+      s.style.setProperty('--x', (Math.random() * 400 - 200) + 'px');
+      s.style.setProperty('--y', (Math.random() * 400 - 200) + 'px');
+      s.style.setProperty('--r', (Math.random() * 360) + 'deg');
+      document.body.appendChild(s);
+      (function (node) {
+        setTimeout(function () { node.remove(); }, 1300);
+      })(s);
+    }
+  }
+
+
+  /* ========== 6. 开启惊喜 + 音乐 + 歌词 ========== */
+  var btn = document.getElementById('startBtn');
+  var bgm = document.getElementById('bgm');
+  var tip = document.getElementById('musicTip');
+  var musicBtn = document.getElementById('musicBtn');
+
+  function fadeIn(volume) {
+    bgm.volume = 0;
+    var v = 0;
+    var timer = setInterval(function () {
+      v += 0.04;
+      if (v >= volume) {
+        bgm.volume = volume;
+        clearInterval(timer);
+      } else {
+        bgm.volume = v;
+      }
+    }, 200);
+  }
+
+  btn.addEventListener('click', function () {
+    btn.style.display = 'none';
+    tip.textContent = '音乐响起，浪漫正在发生……';
+    content.classList.add('show');
+    boomHearts();
+
+    /* 歌词幻灯片开始播放 */
+    lyricsBox.classList.add('show');
+    startLyricShow();
+
+    bgm.play().then(function () {
+      fadeIn(0.85);
+      musicBtn.classList.add('show');
+      musicBtn.textContent = '🎵';
+    }).catch(function () {
+      musicBtn.classList.add('show');
+      musicBtn.textContent = '🔇';
+      tip.innerHTML = '⚠️ 音乐没能自动播放。<br>如果是在微信里，请点右上角「···」→「在浏览器中打开」。';
+    });
+  });
+
+  musicBtn.addEventListener('click', function () {
+    if (bgm.paused) {
+      bgm.play();
+      musicBtn.textContent = '🎵';
+    } else {
+      bgm.pause();
+      musicBtn.textContent = '🔇';
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
