@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ff9a9e">
+<title>致我最爱的老婆 · 生日快乐</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(circle at 20% 20%, #ff9a9e 0%, #fad0c4 30%, #fbc2eb 65%, #a18cd1 100%);
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* ===== 漂浮爱心 ===== */
+  .floating-hearts {
+    position: fixed; inset: 0;
+    pointer-events: none; overflow: hidden; z-index: 0;
+  }
+  .heart {
+    position: absolute; bottom: -60px;
+    will-change: transform;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    to { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ===== 卡片容器 ===== */
+  .card {
+    position: relative; z-index: 2;
+    max-width: 720px; margin: 0 auto;
+    padding: 40px 16px calc(40px + env(safe-area-inset-bottom));
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .glass {
+    width: 100%;
+    background: rgba(255,255,255,.16);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 28px;
+    padding: 34px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  }
+
+  h1 {
+    font-size: clamp(26px, 7.5vw, 46px);
+    margin: 0 0 8px; letter-spacing: 2px;
+    text-shadow: 0 4px 20px rgba(214,51,108,.35);
+  }
+  .date { font-size: 15px; opacity: .92; margin-bottom: 22px; }
+
+  /* ===== 相册 ===== */
+  .slideshow {
+    position: relative; width: 100%;
+    height: min(66vw, 380px);
+    min-height: 240px;
+    border-radius: 20px; overflow: hidden;
+    margin-bottom: 24px;
+    border: 3px solid rgba(255,255,255,.75);
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+    background: linear-gradient(135deg, #ff9a9e, #fecfef);
+  }
+  .slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.4s ease-in-out;
+    will-change: opacity;
+  }
+  .slide.active { opacity: 1; }
+
+  /* 一张照片都没加载成功时的占位 */
+  .slideshow.empty::after {
+    content: '❤ 我们的回忆 ❤';
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; letter-spacing: 4px; color: #fff;
+    text-shadow: 0 2px 10px rgba(214,51,108,.45);
+  }
+
+  /* ===== 按钮 ===== */
+  .btn {
+    margin-top: 6px;
+    border: none; border-radius: 999px;
+    padding: 16px 34px;
+    font-size: 18px; font-weight: 700;
+    color: #d6336c;
+    background: linear-gradient(135deg, #fff, #ffe3ee);
+    box-shadow: 0 10px 30px rgba(214,51,108,.35);
+    cursor: pointer;
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+
+  .music-tip {
+    margin-top: 18px; font-size: 14px;
+    opacity: .88; line-height: 1.7;
+  }
+
+  /* ===== 祝福文字 ===== */
+  .message { margin-top: 6px; }
+  .message p {
+    font-size: clamp(16px, 4.2vw, 20px);
+    line-height: 1.9; margin: 12px 0;
+    opacity: 0; transform: translateY(16px);
+  }
+  .message.show p { animation: fadeUp .9s forwards; }
+  .message.show p:nth-child(1) { animation-delay: .1s; }
+  .message.show p:nth-child(2) { animation-delay: .3s; }
+  .message.show p:nth-child(3) { animation-delay: .5s; }
+  .message.show p:nth-child(4) { animation-delay: .7s; }
+  .message.show p:nth-child(5) { animation-delay: .9s; }
+  .message.show p:nth-child(6) { animation-delay: 1.1s; }
+  .message.show p:nth-child(7) { animation-delay: 1.3s; }
+  .message.show p:nth-child(8) { animation-delay: 1.5s; }
+  .message.show p:nth-child(9) { animation-delay: 1.7s; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  .signature { margin-top: 26px; font-size: 18px; line-height: 1.8; font-weight: 700; }
+
+  /* ===== 右上角音乐开关 ===== */
+  .music-btn {
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top));
+    right: 14px;
+    z-index: 50;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.5);
+    background: rgba(255,255,255,.22);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff; font-size: 20px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s;
+  }
+  .music-btn.show { opacity: 1; pointer-events: auto; }
+  .music-btn.playing { animation: spin 4s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== 爱心爆炸 ===== */
+  .boom {
+    position: fixed; pointer-events: none;
+    font-size: 28px; z-index: 99;
+    will-change: transform, opacity;
+    animation: boom 1.2s ease-out forwards;
+  }
+  @keyframes boom {
+    to {
+      transform: translate(var(--x), var(--y)) rotate(var(--r));
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- 漂浮爱心层 -->
+<div class="floating-hearts" id="hearts"></div>
+
+<!-- 右上角音乐开关 -->
+<button class="music-btn" id="musicBtn" type="button" aria-label="音乐开关">🎵</button>
+
+<div class="card">
+  <div class="glass">
+    <h1>致我最爱的老婆</h1>
+    <div class="date">生日快乐 · 今天为你而浪漫</div>
+
+    <!-- 相册：照片由 JS 按顺序自动加载，加载成功的才会显示 -->
+    <div class="slideshow" id="slideContainer"></div>
+
+    <button class="btn" id="startBtn" type="button">💗 轻触这里，开启生日惊喜</button>
+    <div class="music-tip" id="musicTip">点击后，浪漫的旋律会陪着你一起出现</div>
+
+    <div class="message" id="loveContent">
+      <p>亲爱的老婆：</p>
+      <p>从遇见你的那天起，我的世界就有了温柔的方向。</p>
+      <p>你笑的时候，像春日花海开满整个夏天；</p>
+      <p>你皱眉的时候，我想把全世界的糖都给你。</p>
+      <p>谢谢你陪我走过平凡的日子，把柴米油盐过成浪漫的诗。</p>
+      <p>今天是你生日，我想认真地对你说：</p>
+      <p>不止今天，而是余生每一天，我都爱你。</p>
+      <p>愿你所愿皆成，愿你眼里有光，心中有暖，身边有我。</p>
+      <p class="signature">——永远爱你的老公</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 音乐：本地 music.mp3 优先，外链作为备用 ===== -->
+<audio id="bgm" loop preload="auto" playsinline webkit-playsinline>
+  <source src="music.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_20623eb3a6.mp3?filename=romantic-piano-113953.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ================= 1. 漂浮爱心 ================= */
+  var heartsEl = document.getElementById('hearts');
+  var heartChars = ['❤', '💗', '💕', '💖', '🌸'];
+  var frag = document.createDocumentFragment();
+  for (var i = 0; i < 26; i++) {
+    var h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = heartChars[i % heartChars.length];
+    h.style.left = (Math.random() * 100) + 'vw';
+    h.style.fontSize = (14 + Math.random() * 26) + 'px';
+    h.style.animationDuration = (8 + Math.random() * 10) + 's';
+    h.style.animationDelay = (-Math.random() * 18) + 's';
+    h.style.opacity = (0.35 + Math.random() * 0.5).toFixed(2);
+    frag.appendChild(h);
+  }
+  heartsEl.appendChild(frag);
+
+  /* ================= 2. 相册自动加载 ================= */
+  var PHOTOS = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg',
+                '10.jpg','11.jpg','12.jpg','13.jpg','14.jpg','15.jpg','16.jpg','17.jpg'];
+
+  var slideBox = document.getElementById('slideContainer');
+  var loadedImgs = [];     // 按下标存放加载成功的图片
+  var finished = 0;        // 已处理完的图片数量
+  var curIdx = 0;
+  var slideTimer = null;
+
+  PHOTOS.forEach(function (name, idx) {
+    var img = new Image();
+    img.decoding = 'async';
+    img.alt = '我们的回忆';
+    img.onload = function () { loadedImgs[idx] = img; checkAllDone(); };
+    img.onerror = function () { checkAllDone(); };   // 加载失败直接跳过
+    img.src = name;
+  });
+
+  function checkAllDone() {
+    finished++;
+    if (finished === PHOTOS.length) startSlideshow();
+  }
+
+  function startSlideshow() {
+    var list = loadedImgs.filter(Boolean);
+
+    if (list.length === 0) {
+      slideBox.classList.add('empty');   // 一张都没有 → 显示占位
+      return;
+    }
+
+    list.forEach(function (img, i) {
+      img.className = 'slide' + (i === 0 ? ' active' : '');
+      slideBox.appendChild(img);
+    });
+
+    if (list.length > 1) {
+      slideTimer = setInterval(function () {
+        list[curIdx].classList.remove('active');
+        curIdx = (curIdx + 1) % list.length;
+        list[curIdx].classList.add('active');
+      }, 3500);
+    }
+  }
+
+  /* ================= 3. 音乐播放 ================= */
+  var bgm      = document.getElementById('bgm');
+  var startBtn = document.getElementById('startBtn');
+  var tip      = document.getElementById('musicTip');
+  var content  = document.getElementById('loveContent');
+  var musicBtn = document.getElementById('musicBtn');
+
+  var fadeTimer = null;
+  var musicStarted = false;
+
+  function fadeTo(target) {
+    clearInterval(fadeTimer);
+    fadeTimer = setInterval(function () {
+      var v = Math.min(bgm.volume + 0.04, target);
+      bgm.volume = v;
+      if (v >= target) clearInterval(fadeTimer);
+    }, 120);
+  }
+
+  function playMusic() {
+    bgm.volume = 0;
+    var p = bgm.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function () {
+        fadeTo(0.85);
+        musicStarted = true;
+        musicBtn.classList.add('playing');
+        tip.textContent = '音乐响起，浪漫正在发生……';
+      }).catch(function () {
+        tip.innerHTML = '⚠️ 音乐没能播放：<br>请确认 music.mp3 与本网页在同一个文件夹里；<br>若仍无声，点右上角“···”，选择“在浏览器中打开”。';
+      });
+    }
+  }
+
+  /* 点击开启惊喜 */
+  startBtn.addEventListener('click', function () {
+    startBtn.style.display = 'none';
+    content.classList.add('show');
+    musicBtn.classList.add('show');
+    boomHearts();
+    playMusic();
+  });
+
+  /* 音乐开关 */
+  musicBtn.addEventListener('click', function () {
+    if (bgm.paused) {
+      if (!musicStarted) { playMusic(); return; }
+      bgm.play().then(function () {
+        fadeTo(0.85);
+        musicBtn.classList.add('playing');
+      }).catch(function () {});
+    } else {
+      bgm.pause();
+      musicBtn.classList.remove('playing');
+    }
+  });
+
+  /* ================= 4. 爱心爆炸 ================= */
+  function boomHearts() {
+    var chars = ['❤', '💗', '💖', '✨', '🌸'];
+    var cx = window.innerWidth / 2;
+    var cy = window.innerHeight / 2;
+
+    for (var i = 0; i < 18; i++) {
+      var s = document.createElement('div');
+      s.className = 'boom';
+      s.textContent = chars[Math.floor(Math.random() * chars.length)];
+      s.style.left = cx + 'px';
+      s.style.top  = cy + 'px';
+      s.style.setProperty('--x', (Math.random() * 400 - 200) + 'px');
+      s.style.setProperty('--y', (Math.random() * 400 - 200) + 'px');
+      s.style.setProperty('--r', (Math.random() * 360) + 'deg');
+      document.body.appendChild(s);
+      (function (node) {
+        setTimeout(function () { node.remove(); }, 1300);
+      })(s);
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
