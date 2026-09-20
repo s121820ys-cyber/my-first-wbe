@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>致我最爱的老婆 · 生日快乐</title>
+<style>
+    body { background-color: #111; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif;}
+    h1 { text-align: center; color: #ff6b81; }
+</style>
+</head>
+<body>
+    <h1>致我最爱的老婆<br>生日快乐</h1>
+    
+    <!-- 音乐区 -->
+    <audio id="bgm" loop>
+        <source src="birthday.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-btn" onclick="toggleMusic()" style="position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.8); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; font-size: 20px; color: #000;">
+        🎵
+    </div>
+    <script>
+        var bgm = document.getElementById("bgm");
+        var btn = document.getElementById("music-btn");
+        window.onload = function() {
+            bgm.play().then(function() { btn.innerHTML = "⏸️"; }).catch(function() { btn.innerHTML = "▶️"; });
+        };
+        function toggleMusic() {
+            if (bgm.paused) { bgm.play(); btn.innerHTML = "⏸️"; } 
+            else { bgm.pause(); btn.innerHTML = "▶️"; }
+        }
+    </script>
+</body>
+</html>
